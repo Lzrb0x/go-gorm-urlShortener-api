@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_container_gorm_urlshortener
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: adminPassword
+      POSTGRES_DB: url_shortener_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+
+volumes:
+  pgdata:
+    driver: local
