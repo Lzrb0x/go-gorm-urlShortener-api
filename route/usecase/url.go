@@ -8,9 +8,9 @@ import (
 	"github.com/Lzrb0x/go-gorm-urlShortener-api/db"
 	"github.com/Lzrb0x/go-gorm-urlShortener-api/models"
 )
-//example of interface usage.
+
 type UrlUsecaseInterface interface {
-	GenerateShortURL(originalURL string) (*models.Url, error)
+	GenerateShortURL(originalURL string, userID uint) (*models.Url, error)
 	GetByShortCode(shortCode string) (*models.Url, error)
 }
 
@@ -22,7 +22,11 @@ func NewURLUseCase(repository db.UrlRepoInterface) UrlUsecaseInterface {
 	return &URLUseCase{repository: repository}
 }
 
-func (u *URLUseCase) GenerateShortURL(originalURL string) (*models.Url, error) {
+func (u *URLUseCase) GenerateShortURL(originalURL string, userID uint) (*models.Url, error) {
+	if userID == 0 {
+		return nil, errors.New("user_id é obrigatório")
+	}
+
 	existingURL, err := u.repository.GetByOriginalURL(originalURL)
 	if err != nil {
 		return nil, err
@@ -39,6 +43,7 @@ func (u *URLUseCase) GenerateShortURL(originalURL string) (*models.Url, error) {
 	newURL := &models.Url{
 		OriginalURL: originalURL,
 		ShortCode:   shortCode,
+		UserID:      userID,
 	}
 
 	if err := u.repository.Create(newURL); err != nil {

@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 type UrlRepoInterface interface {
 	GetByOriginalURL(originalURL string) (*models.Url, error)
 	GetByShortCode(shortCode string) (*models.Url, error)
@@ -59,3 +58,4 @@ func (r *URLRepository) CheckShortCodeExists(shortCode string) (bool, error) {
 	err := r.db.Model(&models.Url{}).Where("short_code = ?", shortCode).Count(&count).Error
 	return count > 0, err
 }
+

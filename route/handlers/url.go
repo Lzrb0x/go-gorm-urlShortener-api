@@ -7,6 +7,7 @@ import (
 
 type generateShortUrlRequest struct {
 	OriginalUrl string `json:"original_url" binding:"required,url"`
+	UserID      uint   `json:"user_id" binding:"required"`
 }
 
 type UrlHandlerInterface interface {
@@ -29,9 +30,9 @@ func (h *URLHandler) GenerateShortUrl(c *gin.Context) {
 		return
 	}
 
-	url, err := h.useCase.GenerateShortURL(req.OriginalUrl)
+	url, err := h.useCase.GenerateShortURL(req.OriginalUrl, req.UserID)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Failed to generate short URL"})
+		c.JSON(500, gin.H{"error": "Failed to generate short URL", "details": err.Error()})
 		return
 	}
 
