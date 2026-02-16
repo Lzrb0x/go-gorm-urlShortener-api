@@ -19,12 +19,14 @@ func InitRoutes(database *gorm.DB) *gin.Engine {
 	handler.POST("/shorten", urlHandler.GenerateShortUrl)
 	handler.GET("/:shortCode", urlHandler.RedirectToOriginal)
 
-	// Rotas de Usuário
+	// Rotas de Usuário/Autenticação
 	userRepository := db.NewUserRepository(database)
 	userUseCase := usecase.NewUserUsecase(userRepository)
 	userHandler := handlers.NewUserHandler(userUseCase)
 
 	handler.POST("/users", userHandler.CreateUser)
+	handler.POST("/login", userHandler.Login)
+
 
 	return handler
 }

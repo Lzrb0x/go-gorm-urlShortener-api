@@ -8,6 +8,8 @@ import (
 
 type UserRepoInterface interface {
 	Create(user *models.User) error
+	GetUserByEmail(email string) (*models.User, error)
+	Update(user *models.User) error
 }
 
 type UserRepository struct {
@@ -28,6 +30,23 @@ func (r *UserRepository) Create(user *models.User) error {
 	user.PasswordHash = string(hashedPassword)
 
 	if result := r.db.Create(user); result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (r *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	if result := r.db.Where("email = ?", email).First(&user); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
+}
+
+func (r *UserRepository) Update(user *models.User) error {
+	if result := r.db.Save(user); result.Error != nil {
 		return result.Error
 	}
 

@@ -11,6 +11,7 @@ type envConfig struct {
 	AppPort     string
 	DbPath      string
 	AutoMigrate bool
+	JwtSecret   string
 }
 
 var Config envConfig
@@ -31,8 +32,14 @@ func (e *envConfig) LoadConfig() {
 		log.Panic("DB_PATH not set in environment")
 	}
 
+	jwtSecretValue, ok := os.LookupEnv("JWT_SECRET")
+	if !ok {
+		log.Panic("JWT_SECRET not set in environment")
+	}
+
 	e.AppPort = portValue
 	e.DbPath = dbPathValue
+	e.JwtSecret = jwtSecretValue
 
 	autoMigrateValue, ok := os.LookupEnv("AUTO_MIGRATE")
 	if !ok {

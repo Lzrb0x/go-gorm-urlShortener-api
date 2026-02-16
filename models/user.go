@@ -4,7 +4,9 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	Username string `json:"username" gorm:"unique;not null"`
+	Name         string `json:"name"`
+	Email        string `json:"email" gorm:"unique;not null;index"`
 	PasswordHash string `json:"-" gorm:"not null"`
-	Urls []Url `json:"urls" gorm:"foreignKey:UserID"`
+	RefreshToken string `json:"refresh_token"`
+	Urls         []Url  `json:"urls" gorm:"foreignKey:UserID"`
 }
